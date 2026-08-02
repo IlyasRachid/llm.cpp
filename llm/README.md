@@ -2,9 +2,7 @@ This project bundles a end-to-end implementation of GPT2 from scratch using C++ 
 
 In order to make this project conform and scalable, we have to define the grounding rules and conventions that carry how operations are performed.
 
-The standard tensor representation is that used in llm.c repo: (B,T,C) where B is the batch of input data, T is the sequence length (number of tokens per batch input data point), and C is the size of the token (Channel)
-
-the tensor in question will have the properties:
+The standard tensor representation is: Tensor<T, Rank> where T is the data type and Rank is the number of dimensions. The tensor in question will have the properties:
 - Zero based indexing
 - row-major contiguous
 

@@ -74,16 +74,29 @@ Milestone 4: CPU elementwise addition for [B,T,C]
 # ------------------------------------------------------------------------
 Milestone 5:
 
-Milestone 5-A:
 1 - Refactor Tensor3D into Tensor<T, Rank> with contiguous allocation, checked shape product, row-major strides, and checked coordinate access : `SUCCESS`
 2 - Preserve/regression-test all existing Tensor3D behavior : `SUCCESS`
-3 - Add focused 2-D int and float tests: `SUCCESS`
 
 - Concepts learned: mixed-radix conversion, template files
 - Files changed: ./include/tensor.hpp, ./include/tensor.tpp, tests/test_tensor.cpp, ./CMakeLists.txt, tests/CMakeLists.txt
 - Tests added: Tensor
 - Known limitations: NONE
 - Deferred improvements: NONE
+- Next milestone: CPU token-embedding forward pass
+
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 6:
+
+1 - Implement a CPU function that maps token IDs to embedding vector : `SUCCESS`
+2 - Add tests using a tiny hand-filled table where each output value is random float: `SUCCESS`
+
+- Concepts learned: token embedding, embedding lookup
+- Files changed: ./include/tensor.hpp, ./include/tensor.tpp, tests/test_token_embeddings.cpp, tests/CMakeLists.txt
+- Tests added: TokenEmbeddings
+- Known limitations: NONE
+- Deferred improvements: Having a Tensor method for embedding lookup, and a more efficient implementation using a single contiguous buffer for the embedding table 
 - Next milestone:
 
 -> STATUS : 

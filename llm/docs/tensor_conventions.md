@@ -3,20 +3,49 @@
 Required definitions:
 
 - All tensors are contiguous, row-major, zero-based.
-- Valid indexes:
-batch diemnsion B: 0 <= x < B (B >= 0)
-Time_Sequence dimension T: 0 <= x < T (T >= 0)
-Channel C: 0 <= x < C (C >= 0)
-- Zero-sized tensors are permmitted.
-- The final dimension is contiguous and has stride 1.
+- The standard tensor representation is: Tensor<T, Rank> where T is the data type and Rank is the number of dimensions. 
+- The tensor will have a shape defined by an array of size_t of length Rank.
+- The tensor will have a data pointer of type T* that points to the contiguous memory block storing the tensor data.
+- The tensor will have a numel() method that returns the total number of elements in the tensor, which is the product of the dimensions in the shape array.
+- The tensor will have an item() method that returns a reference to the single element in a rank 0 tensor. If the tensor is not rank 0, calling item() will throw a logic_error exception.
 
-1) - Rank-1 tensors (C):
-offset(c) = c;
 
-2) - Rank-2 tensors (B,C):
-offset(b, c) = b*C + c;
-``` Example: ```
-``` L = [[1,2,3], [4,5,6], [7,8,9]]; offset(1, 2) = 1 * 3 + 2```
+Tensor saving format: (binary + metadata)
++---------------------------+
+| Magic Number (4 bytes)    |
++---------------------------+
+| Version (4 bytes)         |
++---------------------------+
+| Rank (4 bytes)            |
++---------------------------+
+| Element Size (4 bytes)    |
++---------------------------+
+| Shape (rank * uint64_t)   |
++---------------------------+
+| Raw tensor data           |
++---------------------------+
 
-3) - Rank-3 tensors (B,T,C):
-offset(b, t, c) = b * (T*C) + (t*C) + c = (b*T + t)*C + c;
+
+final layout:
+
++--------------------------+
+| Magic = "TENS"           |
++--------------------------+
+| Version                  |
++--------------------------+
+| DType                    |
++--------------------------+
+| Rank                     |
++--------------------------+
+| Reserved                 |
++--------------------------+
+| Shape[0]                 |
++--------------------------+
+| Shape[1]                 |
++--------------------------+
+| ...                      |
++--------------------------+
+| Shape[Rank-1]            |
++--------------------------+
+| Raw tensor bytes         |
++--------------------------+

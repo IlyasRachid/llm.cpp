@@ -1,6 +1,7 @@
 # include <iostream>
+#include "tensor.hpp"
+#include <cstdlib>
 
 int main() {
-    std::cout << "This is an LLM project inspired by Karpathy's repo llm.c" << std::endl;
     return 0;
 }
