@@ -49,6 +49,7 @@ public:
               enable_indices_t<Rank, Indices...> = 0>
     const T& operator()(Indices... indices) const;
 
+    // Tensor compound indexing
     template <typename IndexType, std::size_t IndexRank>
     Tensor<T, Rank - 1 + IndexRank> operator[](const Tensor<IndexType, IndexRank>& indices) const;
 
