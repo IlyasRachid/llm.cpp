@@ -153,8 +153,22 @@ Milestone 10: GELU forward pass
 2 - Test zero, positive, negative, symmetry-related values, approximate reference values, and zero-sized tensors : `SUCCESS`
 
 - Concepts learned: gelu function
-- Files changed: ./include/linear.hpp, ./include/linear.tpp, tests/test_linear.cpp, tests/CMakeLists.txt
-- Tests added: Linear
+- Files changed: ./include/gelu.hpp, ./include/gelu.tpp, tests/test_gelu.cpp, tests/CMakeLists.txt
+- Tests added: Gelu
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone:stable softmax over the final dimension
+
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 11: stable softmax over the final dimension
+
+1 - Implement CPU softmax for a rank-3 tensor [B,T,C], normalizing independently over each [B,T] row: `SUCCESS`
+
+- Concepts learned: softmax function
+- Files changed: ./include/softmax.hpp, ./include/softmax.tpp, tests/test_softmax.cpp, tests/CMakeLists.txt
+- Tests added: Softmax
 - Known limitations: NONE
 - Deferred improvements: NONE
 - Next milestone:
