@@ -68,6 +68,8 @@ public:
     T* data_ptr();
     const T* data_ptr() const;
 
+    const std::array<size_t, Rank> stride() { return stride_; }
+
     void save(const std::filesystem::path& path) const;
 
     static Tensor load(const std::filesystem::path& path);

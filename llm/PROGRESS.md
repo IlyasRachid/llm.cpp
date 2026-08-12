@@ -115,3 +115,48 @@ Milestone 7: positional embedding forward pass
 - Next milestone:
 
 -> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 8: CPU LayerNorm forward pass
+
+1 - Implement layer normalization over the final tensor dimension : `SUCCESS`
+2 - Use a fixed small epsilon, such as 1e-4f, and document it : `SUCCESS`
+
+- Concepts learned: layer_norm
+- Files changed: ./include/layerNorm.hpp, ./include/layerNorm.tpp, tests/test_layernorm.cpp, tests/CMakeLists.txt
+- Tests added: TestLayerNorm
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone:
+
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 9: CPU linear layer forward pass
+
+1 - Implement a fully connected layer that transforms the final dimension of an input tensor : `SUCCESS`
+2 - Start with this simple version. Do not optimize or parallelize it yet : `SUCCESS`
+
+- Concepts learned: Linear forward pass
+- Files changed: ./include/linear.hpp, ./include/linear.tpp, tests/test_linear.cpp, tests/CMakeLists.txt
+- Tests added: Linear
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: GELU forward pass
+
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 10: GELU forward pass
+
+1 - Implement the Gaussian Error Linear Unit elementwise over a tensor : `SUCCESS`
+2 - Test zero, positive, negative, symmetry-related values, approximate reference values, and zero-sized tensors : `SUCCESS`
+
+- Concepts learned: gelu function
+- Files changed: ./include/linear.hpp, ./include/linear.tpp, tests/test_linear.cpp, tests/CMakeLists.txt
+- Tests added: Linear
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone:
+
+-> STATUS : 
