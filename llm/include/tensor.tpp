@@ -248,6 +248,83 @@ Tensor<T, Rank> Tensor<T,Rank>::operator+(const Tensor& other) const {
 }
 
 // -----------------------------------------------------------------------------
+// Multiplication
+// -----------------------------------------------------------------------------
+
+template <typename T, std::size_t Rank>
+Tensor<T, Rank> Tensor<T, Rank>::matmul(const Tensor& other, bool transpose_b) const {
+    static_assert(Rank >= 2, "Rank must be at least 2");
+
+    auto shape = this->shape();
+    auto other_shape = other.shape();
+
+    for (std::size_t i = 0; i < Rank - 2; i++) {
+        if (shape[i] != other_shape[i]) {
+            throw std::invalid_argument("batch shapes are not equal");
+        }
+    }
+
+    std::size_t M = shape[Rank - 2];
+    std::size_t K = shape[Rank - 1];
+    
+    // if transpose_b, "other" is logically [..., N, K] and we read it as such
+    std::size_t N   = transpose_b ? other_shape[Rank - 2] : other_shape[Rank - 1];
+    std::size_t K2  = transpose_b ? other_shape[Rank - 1] : other_shape[Rank - 2];
+
+    if (K != K2) {
+        throw std::invalid_argument("inner dimensions must match");
+    }
+
+    auto out_shape = shape;
+    out_shape[Rank - 1] = N;
+    Tensor<T, Rank> output(out_shape);
+
+    size_t batch_size = 1;
+    for (size_t i = 0; i < Rank-2; ++i) { batch_size *= shape[i]; }
+
+    const auto& a_strides = this->stride();
+    const auto& b_strides = other.stride();
+    const auto& c_strides = output.stride();
+
+    const T* a_data = this->data_ptr();
+    const T* b_data = other.data_ptr();
+    T* c_data = output.data_ptr();
+
+    std::array<std::size_t, Rank> curr_idx{};
+
+    for (size_t b = 0; b < batch_size; b++) {
+        std::size_t a_batch_off = 0, b_batch_off = 0, c_batch_off = 0;
+        size_t rem = b;
+        for (size_t d = Rank-2; d-- > 0; ) {
+            curr_idx[d] = rem % out_shape[d];
+            rem /= out_shape[d];
+        }
+
+        for (size_t i = 0; i < Rank-2; i++) {
+            a_batch_off += curr_idx[i] * a_strides[i];
+            b_batch_off += curr_idx[i] * b_strides[i];
+            c_batch_off += curr_idx[i] * c_strides[i];
+        }
+
+        for (size_t i = 0; i < M; i++) {
+            for (size_t j = 0; j < N; j++) {
+                T total = 0;
+                for (size_t k = 0; k < K; k++) {
+                    size_t a_off = a_batch_off + i * a_strides[Rank-2] + k * a_strides[Rank-1];
+                    size_t b_off = transpose_b 
+                    ? b_batch_off + j * b_strides[Rank-2] + k * b_strides[Rank-1]
+                    : b_batch_off + k * b_strides[Rank-2] + j * b_strides[Rank-1];
+                    total += a_data[a_off] * b_data[b_off];
+                }
+                size_t c_off = c_batch_off + i * c_strides[Rank-2] + j * c_strides[Rank-1];
+                c_data[c_off] = total;
+            }
+        }
+    }
+    return output;
+}
+
+// -----------------------------------------------------------------------------
 // Metadata
 // -----------------------------------------------------------------------------
 

@@ -164,7 +164,7 @@ Milestone 10: GELU forward pass
 # ------------------------------------------------------------------------
 Milestone 11: stable softmax over the final dimension
 
-1 - Implement CPU softmax for a rank-3 tensor [B,T,C], normalizing independently over each [B,T] row: `SUCCESS`
+1 - Implement CPU softmax for a rank-n tensor [B,T,C], normalizing independently over each [B,T] row: `SUCCESS`
 
 - Concepts learned: softmax function
 - Files changed: ./include/softmax.hpp, ./include/softmax.tpp, tests/test_softmax.cpp, tests/CMakeLists.txt
@@ -173,4 +173,32 @@ Milestone 11: stable softmax over the final dimension
 - Deferred improvements: NONE
 - Next milestone:
 
--> STATUS : 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 12: Causal masking
+
+1 - Implement a CPU causal mask for attention scores shaped [B,T,T] : `SUCCESS`
+
+- Concepts learned: causal masking
+- Files changed: ./include/causal_masking.hpp, ./include/causal_masking.tpp, tests/test_causal_masking.cpp, tests/CMakeLists.txt
+- Tests added: CausalMasking
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone:
+
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 13: Scaled dot-product attention scores
+
+1 - Implement only the score calculation : `SUCCESS`
+
+- Concepts learned: scaled dot-product attention scores
+- Files changed: ./include/causal_masking.hpp, ./include/causal_masking.tpp, tests/test_causal_masking.cpp, tests/CMakeLists.txt
+- Tests added: 
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone:
+
+-> STATUS : `PASSED`

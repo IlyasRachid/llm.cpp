@@ -59,6 +59,8 @@ public:
 
     Tensor operator+(const Tensor& other) const;
 
+    Tensor matmul(const Tensor& other, bool transpose_b) const;
+
     // Tensor metadata and storage access
     const std::array<size_t, Rank>& shape() const;
     size_t numel() const;
@@ -68,7 +70,7 @@ public:
     T* data_ptr();
     const T* data_ptr() const;
 
-    const std::array<size_t, Rank> stride() { return stride_; }
+    const std::array<size_t, Rank>& stride() const { return stride_; }
 
     void save(const std::filesystem::path& path) const;
 
