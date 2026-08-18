@@ -206,13 +206,84 @@ Milestone 13: Scaled dot-product attention scores
 # ------------------------------------------------------------------------
 Milestone 14: attention probability matrix
 
-1 - Implement only the score calculation : `SUCCESS`
+1 - Compose scaled scores, causal masking, and stable softmax : `SUCCESS`
 
-- Concepts learned: scaled dot-product attention scores
-- Files changed: ./include/causal_masking.hpp, ./include/causal_masking.tpp, tests/test_causal_masking.cpp, tests/CMakeLists.txt
-- Tests added: 
+- Concepts learned: attention probability matrix
+- Files changed: ./include/causal_masking.hpp, ./include/causal_masking.tpp, ./include/attention_probs.hpp, ./include/attention_probs.tpp, tests/test_attention_probs.cpp, tests/CMakeLists.txt
+- Tests added: AttentionProbs
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: attention value aggregation
+
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 15: attention value aggregation
+
+1 - Implement attention value aggregation: `SUCCESS`
+
+- Concepts learned: attention value aggregation
+- Files changed: ./include/attention_aggregation.hpp,
+                 ./include/attention_aggregation.tpp,
+                 tests/test_attention_aggregation.cpp,
+                 tests/CMakeLists.txt
+- Tests added: AttentionAggregation
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: complete single-head attention
+ 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 16: complete single-head attention
+
+1 - Compose the full CPU attention pipeline : `SUCCESS`
+2 - Test it against the separately tested components : `SUCCESS`
+
+- Concepts learned: attention value aggregation
+- Files changed: ./include/single_head_attention.hpp,
+                 ./include/single_head_attention.tpp,
+                 tests/test_single_head_attention.cpp,
+                 tests/CMakeLists.txt
+- Tests added: SingleHeadAttention
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: attention output projection
+ 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 17: attention output projection
+
+1 - Apply a linear projection to the single-head attention output : `SUCCESS`
+2 - Reuse the existing linear operation : `SUCCESS`
+
+- Concepts learned: attention output projection
+- Files changed: ./include/attention_projection.hpp,
+                 ./include/attention_projection.tpp,
+                 tests/test_attention_projection.cpp,
+                 tests/CMakeLists.txt
+- Tests added: AttentionProjection
 - Known limitations: NONE
 - Deferred improvements: NONE
 - Next milestone:
+ 
+-> STATUS : `PASSED`
 
--> STATUS :
+# ------------------------------------------------------------------------
+Milestone 17: residual connection
+
+1 - Implement the residual addition used in transformer blocks : `SUCCESS`
+2 - Reuse the existing linear operation : `SUCCESS`
+
+- Concepts learned: residual connection
+- Files changed: ./include/residual_connection.hpp,
+                 ./include/esidual_connection.tpp,
+                 tests/test_esidual_connection.cpp,
+                 tests/CMakeLists.txt
+- Tests added: ResidualConnection
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone:
+ 
+-> STATUS : `PASSED`

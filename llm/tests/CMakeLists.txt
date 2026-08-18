@@ -10,6 +10,11 @@ add_executable(testGelu test_gelu.cpp)
 add_executable(testSoftmax test_softmax.cpp)
 add_executable(testCausalMasking test_causal_masking.cpp)
 add_executable(testScaledDotProductAttention test_scaled_dot_product_attention.cpp)
+add_executable(testAttentionProbs test_attention_probs.cpp)
+add_executable(testAttentionAggregation test_attention_aggregation.cpp)
+add_executable(testSingleHeadAttention test_single_head_attention.cpp)
+add_executable(testAttentionProjection test_attention_projection.cpp)
+add_executable(testResidualConnection test_residual_connection.cpp)
 
 target_compile_options(testIndex PRIVATE ${TEST_WARNING_FLAGS})
 
@@ -40,6 +45,21 @@ target_compile_options(testCausalMasking PRIVATE ${TEST_WARNING_FLAGS})
 target_link_libraries(testScaledDotProductAttention PRIVATE tensor_lib)
 target_compile_options(testScaledDotProductAttention PRIVATE ${TEST_WARNING_FLAGS})
 
+target_link_libraries(testAttentionProbs PRIVATE tensor_lib)
+target_compile_options(testAttentionProbs PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testAttentionAggregation PRIVATE tensor_lib)
+target_compile_options(testAttentionAggregation PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testSingleHeadAttention PRIVATE tensor_lib)
+target_compile_options(testSingleHeadAttention PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testAttentionProjection PRIVATE tensor_lib)
+target_compile_options(testAttentionProjection PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testResidualConnection PRIVATE tensor_lib)
+target_compile_options(testResidualConnection PRIVATE ${TEST_WARNING_FLAGS})
+
 add_test(NAME AppRunsSuccessfully COMMAND llm)
 add_test(NAME TensorConventions COMMAND testIndex)
 add_test(NAME Tensor COMMAND testTensor)
@@ -51,3 +71,8 @@ add_test(NAME Gelu COMMAND testGelu)
 add_test(NAME Softmax COMMAND testSoftmax)
 add_test(NAME CausalMasking COMMAND testCausalMasking)
 add_test(NAME ScaledDotProductAttention COMMAND testScaledDotProductAttention)
+add_test(NAME AttentionProbs COMMAND testAttentionProbs)
+add_test(NAME AttentionAggregation COMMAND testAttentionAggregation)
+add_test(NAME SingleHeadAttention COMMAND testSingleHeadAttention)
+add_test(NAME AttentionProjection COMMAND testAttentionProjection)
+add_test(NAME ResidualConnection COMMAND testResidualConnection)
