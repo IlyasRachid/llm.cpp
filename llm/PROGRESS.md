@@ -195,10 +195,24 @@ Milestone 13: Scaled dot-product attention scores
 1 - Implement only the score calculation : `SUCCESS`
 
 - Concepts learned: scaled dot-product attention scores
+- Files changed: ./include/scaled_dot_product_attention.hpp, ./include/scaled_dot_product_attention.tpp, tests/test_scaled_dot_product_attention.cpp, tests/CMakeLists.txt
+- Tests added: ScaledDotProductAttention
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: attention probability matrix
+
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 14: attention probability matrix
+
+1 - Implement only the score calculation : `SUCCESS`
+
+- Concepts learned: scaled dot-product attention scores
 - Files changed: ./include/causal_masking.hpp, ./include/causal_masking.tpp, tests/test_causal_masking.cpp, tests/CMakeLists.txt
 - Tests added: 
 - Known limitations: NONE
 - Deferred improvements: NONE
 - Next milestone:
 
--> STATUS : `PASSED`
+-> STATUS :

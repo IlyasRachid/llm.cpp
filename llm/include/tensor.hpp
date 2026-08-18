@@ -54,12 +54,20 @@ public:
     Tensor<T, Rank - 1 + IndexRank> operator[](const Tensor<IndexType, IndexRank>& indices) const;
 
     // Tensor operations
+    Tensor clone() const;
+
     Tensor slice(const std::array<Slice, Rank>& ranges) const;
     Tensor slice(std::initializer_list<Slice> ranges) const;
 
     Tensor operator+(const Tensor& other) const;
 
     Tensor matmul(const Tensor& other, bool transpose_b) const;
+
+    // in-place scaling
+    Tensor& scale_(T factor);
+    
+    //out-place scaling
+    Tensor scale(T factor) const;
 
     // Tensor metadata and storage access
     const std::array<size_t, Rank>& shape() const;

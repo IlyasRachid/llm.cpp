@@ -167,6 +167,37 @@ Tensor<T, Rank - 1 + IndexRank> Tensor<T, Rank>::operator[](const Tensor<IndexTy
     return output;
 }
 
+// -----------------------------------------------------------------------------
+// Cloning
+// -----------------------------------------------------------------------------
+
+template <typename T, std::size_t Rank>
+Tensor<T, Rank> Tensor<T, Rank>::clone() const {
+    Tensor<T, Rank> output(this->shape());
+    // deep copy — stride-aware, same pattern as scale_
+    const T* in_data = this->data_ptr();
+    T* out_data = output.data_ptr();
+    const auto& shape_ = this->shape();
+    const auto& in_strides = this->stride();
+    const auto& out_strides = output.stride();
+    std::size_t total = this->numel();
+    std::array<std::size_t, Rank> idx{};
+
+    for (std::size_t n = 0; n < total; n++) {
+        std::size_t rem = n;
+        for (std::size_t d = Rank; d-- > 0; ) {
+            idx[d] = rem % shape_[d];
+            rem /= shape_[d];
+        }
+        std::size_t in_off = 0, out_off = 0;
+        for (std::size_t d = 0; d < Rank; d++) {
+            in_off += idx[d] * in_strides[d];
+            out_off += idx[d] * out_strides[d];
+        }
+        out_data[out_off] = in_data[in_off];
+    }
+    return output;
+}
 
 // -----------------------------------------------------------------------------
 // Slicing
@@ -321,6 +352,39 @@ Tensor<T, Rank> Tensor<T, Rank>::matmul(const Tensor& other, bool transpose_b) c
             }
         }
     }
+    return output;
+}
+
+// -----------------------------------------------------------------------------
+// Scaling
+// -----------------------------------------------------------------------------
+
+template <typename T, std::size_t Rank>
+Tensor<T, Rank>& Tensor<T, Rank>::scale_(T factor) {
+    T* data = this->data_ptr();
+    const auto& shape_ = this->shape();
+    const auto& strides_ = this->stride();
+    std::size_t total = this->numel();
+    std::array<std::size_t, Rank> idx{};
+
+    for (std::size_t n = 0; n < total; n++) {
+        std::size_t rem = n;
+        for (std::size_t d = Rank; d-- > 0; ) {
+            idx[d] = rem % shape_[d];
+            rem /= shape_[d];
+        }
+        std::size_t off = 0;
+        for (std::size_t d = 0; d < Rank; d++) off += idx[d] * strides_[d];
+        data[off] *= factor;
+    }
+
+    return *this;
+}
+
+template <typename T, std::size_t Rank>
+Tensor<T, Rank> Tensor<T, Rank>::scale(T factor) const {
+    Tensor<T, Rank> output = this->clone();          
+    output.scale_(factor);
     return output;
 }
 
