@@ -168,6 +168,74 @@ Tensor<T, Rank - 1 + IndexRank> Tensor<T, Rank>::operator[](const Tensor<IndexTy
 }
 
 // -----------------------------------------------------------------------------
+// reshaping
+// -----------------------------------------------------------------------------
+
+template <typename T, std::size_t Rank>
+template <std::size_t d>
+Tensor<T, Rank - 1 + d> Tensor<T, Rank>::reshape(std::size_t dim, std::array<std::size_t, d> new_shape) const {
+
+    if (dim >= Rank) throw std::invalid_argument("dim must be less than Rank of tensor");
+
+    const auto& shape = this->shape();
+    std::size_t total = 1;
+    for (auto n : new_shape) {
+        total *= n;
+    }
+
+    if (total != shape[dim]) {
+        throw std::invalid_argument("new_shape combination must multiply to the dim");
+    }
+
+    std::array<std::size_t, Rank - 1 + d> out_shape{};
+
+    for (std::size_t i = 0; i < Rank; i++) {
+        if (i == dim) {
+            for (std::size_t j = 0; j < d; j++) {
+                out_shape[i + j] = new_shape[j];
+            }
+        } else if (i < dim) {
+            out_shape[i] = shape[i];
+        } else {
+            out_shape[i + d - 1] = shape[i];
+        }
+    }
+
+    Tensor<T, Rank - 1 + d> output(out_shape);
+
+    const auto& in_strides = this->stride();
+    const auto& out_strides = output.stride();
+
+    const T* in_ptr = this->data_ptr();
+    T* out_ptr = output.data_ptr();
+
+    const std::size_t total_elems = this->numel();
+    std::array<std::size_t, Rank> in_idx{};
+    std::array<std::size_t, Rank - 1 + d> out_idx{};
+
+    for (std::size_t i = 0; i < total_elems; i++) {
+        std::size_t in_rem = i;
+        std::size_t out_rem = i;
+        for (std::size_t k = Rank; k-- > 0; ) {
+            in_idx[k] = in_rem % shape[k];
+            in_rem /= shape[k];
+        }
+        for (std::size_t k = Rank - 1 + d; k-- > 0; ) {
+            out_idx[k] = out_rem % out_shape[k];
+            out_rem /= out_shape[k];
+        }
+
+        std::size_t in_offset = 0, out_offset = 0;
+        for (std::size_t k = 0; k < Rank; k++) { in_offset += in_idx[k] * in_strides[k]; }
+        for (std::size_t k = 0; k < Rank - 1 + d; k++) { out_offset += out_idx[k] * out_strides[k]; }
+
+        out_ptr[out_offset] = in_ptr[in_offset];
+    }
+
+    return output;
+}
+
+// -----------------------------------------------------------------------------
 // Cloning
 // -----------------------------------------------------------------------------
 
@@ -257,6 +325,56 @@ Tensor<T, Rank> Tensor<T, Rank>::slice(
     std::array<Slice, Rank> range_array{};
     std::copy(ranges.begin(), ranges.end(), range_array.begin());
     return slice(range_array);
+}
+
+
+// -----------------------------------------------------------------------------
+// Transpose
+// -----------------------------------------------------------------------------
+
+template <typename T, std::size_t Rank>
+Tensor<T, Rank> Tensor<T, Rank>::transpose(std::size_t d1, std::size_t d2) const {
+
+    if (d1 >= Rank || d2 >= Rank) {
+        throw std::invalid_argument("dims must be less than Rank");
+    }
+    const auto& shape = this->shape();
+    std::array<std::size_t, Rank> out_shape = shape;
+
+    out_shape[d1] = shape[d2];
+    out_shape[d2] = shape[d1];
+
+    Tensor<T, Rank> output(out_shape);
+
+    const auto& in_strides = this->stride();
+    const auto& out_strides = output.stride();
+
+    const T* in_ptr = this->data_ptr();
+    T* out_ptr = output.data_ptr();
+
+    const std::size_t total_elems = this->numel();
+    std::array<std::size_t, Rank> out_idx{};
+
+    for (std::size_t i = 0; i < total_elems; i++) {
+        std::size_t rem = i;
+        for (std::size_t k = Rank; k-- > 0; ) {
+            out_idx[k] = rem % out_shape[k];
+            rem /= out_shape[k];
+        }
+
+        std::array<std::size_t, Rank> in_idx = out_idx;
+        std::swap(in_idx[d1], in_idx[d2]);
+
+        std::size_t in_offset = 0, out_offset = 0;
+        for (std::size_t k = 0; k < Rank; k++) {
+            in_offset  += in_idx[k]  * in_strides[k];
+            out_offset += out_idx[k] * out_strides[k];
+        }
+
+        out_ptr[out_offset] = in_ptr[in_offset];
+    }
+
+    return output;
 }
 
 // -----------------------------------------------------------------------------
@@ -385,6 +503,71 @@ template <typename T, std::size_t Rank>
 Tensor<T, Rank> Tensor<T, Rank>::scale(T factor) const {
     Tensor<T, Rank> output = this->clone();          
     output.scale_(factor);
+    return output;
+}
+
+// -----------------------------------------------------------------------------
+// merge
+// -----------------------------------------------------------------------------
+
+template <typename T, std::size_t Rank>
+template <std::size_t d>
+Tensor<T, Rank - d + 1> Tensor<T, Rank>::merge(std::size_t dim) const {
+    static_assert(d >= 1, "d must be at least 1");
+
+    if (dim + d > Rank) {
+        throw std::invalid_argument("dim + d must not exceed Rank");
+    }
+
+    const auto& shape = this->shape();
+    std::size_t merged = 1;
+    for (std::size_t j = 0; j < d; j++) {
+        merged *= shape[dim + j];
+    }
+
+    std::array<std::size_t, Rank - d + 1> out_shape{};
+    std::size_t out_i = 0;
+    for (std::size_t i = 0; i < Rank; ) {
+        if (i == dim) {
+            out_shape[out_i++] = merged;
+            i += d;
+        } else {
+            out_shape[out_i++] = shape[i];
+            i += 1;
+        }
+    }
+
+    Tensor<T, Rank - d + 1> output(out_shape);
+
+    const auto& in_strides = this->stride();
+    const auto& out_strides = output.stride();
+
+    const T* in_ptr = this->data_ptr();
+    T* out_ptr = output.data_ptr();
+
+    const std::size_t total_elems = this->numel();
+    std::array<std::size_t, Rank> in_idx{};
+    std::array<std::size_t, Rank - d + 1> out_idx{};
+
+    for (std::size_t i = 0; i < total_elems; i++) {
+        std::size_t in_rem = i;
+        std::size_t out_rem = i;
+        for (std::size_t k = Rank; k-- > 0; ) {
+            in_idx[k] = in_rem % shape[k];
+            in_rem /= shape[k];
+        }
+        for (std::size_t k = Rank - d + 1; k-- > 0; ) {
+            out_idx[k] = out_rem % out_shape[k];
+            out_rem /= out_shape[k];
+        }
+
+        std::size_t in_offset = 0, out_offset = 0;
+        for (std::size_t k = 0; k < Rank; k++) { in_offset += in_idx[k] * in_strides[k]; }
+        for (std::size_t k = 0; k < Rank - d + 1; k++) { out_offset += out_idx[k] * out_strides[k]; }
+
+        out_ptr[out_offset] = in_ptr[in_offset];
+    }
+
     return output;
 }
 

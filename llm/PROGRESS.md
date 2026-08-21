@@ -284,6 +284,112 @@ Milestone 17: residual connection
 - Tests added: ResidualConnection
 - Known limitations: NONE
 - Deferred improvements: NONE
+- Next milestone: packed QKV projection
+ 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 18: packed QKV projection
+
+1 - Implement the linear projection that produces query, key, and value vectors together : `SUCCESS`
+2 - Reuse the existing linear operation : `SUCCESS`
+
+- Concepts learned: QKV projection
+- Files changed: ./include/packed_projection.hpp,
+                 ./include/packed_projection.tpp,
+                 tests/test_packed_projection.cpp,
+                 tests/CMakeLists.txt
+- Tests added: PackedProjection
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: split packed QKV
+ 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 19: split packed QKV
+
+1 - Create a small representation for separate Q, K, and V tensors : `SUCCESS`
+2 - Implement a split operation that copies each contiguous section into its own tensor : `SUCCESS`
+
+- Concepts learned: QKV projection
+- Files changed: ./include/split_qkv.hpp,
+                 ./include/split_qkv.tpp,
+                 tests/test_split_qkv.cpp,
+                 tests/CMakeLists.txt
+- Tests added: SplitQKV
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: multi-head reshape
+ 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 20: multi-head reshape
+
+1 - Reshape each [B,T,C] tensor into multiple attention heads : `SUCCESS`
+
+- Concepts learned: Multi-heads
+- Files changed: ./include/multi_head_reshape.hpp,
+                 ./include/multi_head_reshape.tpp,
+                 tests/test_multi_head_reshape.cpp,
+                 tests/CMakeLists.txt
+- Tests added: MultiHeadReshape
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone:
+ 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 21: multi-head attention
+
+1 - Compose the existing operations for rank-4 tensors : `SUCCESS`
+2 - Implement the multi-head attention function without merging heads back yet : `SUCCESS`
+
+- Concepts learned: multi-head attention
+- Files changed: ./include/multi_head_attention.hpp,
+                 ./include/multi_head_attention.tpp,
+                 tests/test_multi_head_attention.cpp,
+                 tests/CMakeLists.txt
+- Tests added: MultiHeadAttention
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: merge attention heads
+ 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 22: merge attention heads
+
+1 - Convert the multi-head output : `SUCCESS`
+2 - Require or verify that H·D matches the model channel dimension : `SUCCESS`
+
+- Concepts learned: merging attention heads
+- Files changed: ./include/merge_multi_head.hpp,
+                 ./include/merge_multi_head.tpp,
+                 tests/test_merge_multi_head.cpp,
+                 tests/CMakeLists.txt
+- Tests added: MergeMultiHead
+- Known limitations: NONE
+- Deferred improvements: NONE
+- Next milestone: projected multi-head attention output
+ 
+-> STATUS : `PASSED`
+
+# ------------------------------------------------------------------------
+Milestone 23: projected multi-head attention output
+
+1 - Compose everything : `SUCCESS`
+
+- Concepts learned: attention
+- Files changed: ./include/projected_multi_head_attention.hpp,
+                 ./include/projected_multi_head_attention.tpp,
+                 tests/test_projected_multi_head_attention.cpp,
+                 tests/CMakeLists.txt
+- Tests added: ProjectedMultiHeadAttention
+- Known limitations: NONE
+- Deferred improvements: NONE
 - Next milestone:
  
 -> STATUS : `PASSED`

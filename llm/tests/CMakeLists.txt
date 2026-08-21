@@ -15,6 +15,12 @@ add_executable(testAttentionAggregation test_attention_aggregation.cpp)
 add_executable(testSingleHeadAttention test_single_head_attention.cpp)
 add_executable(testAttentionProjection test_attention_projection.cpp)
 add_executable(testResidualConnection test_residual_connection.cpp)
+add_executable(testPackedProjection test_packed_projection.cpp)
+add_executable(testSplitQKV test_split_qkv.cpp)
+add_executable(testMultiHeadReshape test_multi_head_reshape.cpp)
+add_executable(testMultiHeadAttention test_multi_head_attention.cpp)
+add_executable(testMergeMultiHead test_merge_multi_head.cpp)
+add_executable(testProjectedMultiHeadAttention test_projected_multi_head_attention.cpp)
 
 target_compile_options(testIndex PRIVATE ${TEST_WARNING_FLAGS})
 
@@ -60,6 +66,24 @@ target_compile_options(testAttentionProjection PRIVATE ${TEST_WARNING_FLAGS})
 target_link_libraries(testResidualConnection PRIVATE tensor_lib)
 target_compile_options(testResidualConnection PRIVATE ${TEST_WARNING_FLAGS})
 
+target_link_libraries(testPackedProjection PRIVATE tensor_lib)
+target_compile_options(testPackedProjection PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testSplitQKV PRIVATE tensor_lib)
+target_compile_options(testSplitQKV PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testMultiHeadReshape PRIVATE tensor_lib)
+target_compile_options(testMultiHeadReshape PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testMultiHeadAttention PRIVATE tensor_lib)
+target_compile_options(testMultiHeadAttention PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testMergeMultiHead PRIVATE tensor_lib)
+target_compile_options(testMergeMultiHead PRIVATE ${TEST_WARNING_FLAGS})
+
+target_link_libraries(testProjectedMultiHeadAttention PRIVATE tensor_lib)
+target_compile_options(testProjectedMultiHeadAttention PRIVATE ${TEST_WARNING_FLAGS})
+
 add_test(NAME AppRunsSuccessfully COMMAND llm)
 add_test(NAME TensorConventions COMMAND testIndex)
 add_test(NAME Tensor COMMAND testTensor)
@@ -76,3 +100,9 @@ add_test(NAME AttentionAggregation COMMAND testAttentionAggregation)
 add_test(NAME SingleHeadAttention COMMAND testSingleHeadAttention)
 add_test(NAME AttentionProjection COMMAND testAttentionProjection)
 add_test(NAME ResidualConnection COMMAND testResidualConnection)
+add_test(NAME PackedProjection COMMAND testPackedProjection)
+add_test(NAME SplitQKV COMMAND testSplitQKV)
+add_test(NAME MultiHeadReshape COMMAND testMultiHeadReshape)
+add_test(NAME MultiHeadAttention COMMAND testMultiHeadAttention)
+add_test(NAME MergeMultiHead COMMAND testMergeMultiHead)
+add_test(NAME ProjectedMultiHeadAttention COMMAND testProjectedMultiHeadAttention)
